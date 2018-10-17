@@ -87,19 +87,14 @@ function show_cars_list($atts, $content = null) {
 	// Fetch Posts
 	$car_posts = new WP_Query($args);
 
-	
-	$counter = 1;
 	$output = '';
 	$output .= '<h3>Categories</h3>';
-	$output .= '<div id="accordion">';
-	$output .= get_the_term_list( $post->ID, 'category', '<h3>Category '.$counter.'</h3><div><p>', '</p></div><h3>Category '.++$counter.'</h3><div><p>','</p></div>');
-	
-	$output .= '</div>';
+
+	$output .= get_the_term_list($post->ID, 'category', '<ul><li>', '</li><li>', '</li></ul>');
 	wp_reset_postdata();
-	return $output;
+	return $output;  
+
 }
 
-//if (is_author()) {
 add_shortcode( 'car_form', 'add_car_form' );
 add_shortcode( 'show_cars', 'show_cars_list' );
-//}

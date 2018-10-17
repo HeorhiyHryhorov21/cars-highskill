@@ -68,13 +68,37 @@ class Cars_Highskill_Widget extends WP_Widget {
 		<?php
 		if ($instance['show_taxonomy'] == true) {
 			// Getting posts taxonomies
-			?>
-			<h3>Categories</h3>
-			
-			
-			<?php echo get_the_term_list( $post->ID, 'category', '<ul><li>', '</li><li>', '</li></ul>' );  ?>
-			
-			<?php
+			global $post;
+
+			$terms = array(
+				array(
+					'taxonomy' => 'category',
+					'field'    => 'slug',
+					'terms'    => 'category'
+
+				));
+
+			// Query Args
+			$args = array(
+				'post_type' 	=> 'cars',
+				'post_status' 	=> 'publish',
+				'orderby' 		=> 'created',
+				'order' 		=> 'ASC',
+				'post_per_page' => $atts['count'],
+				'tax_query' 	=> $terms
+			);
+
+			// Fetch Posts
+			$car_posts = new WP_Query($args);
+
+
+			$counter = 1;
+
+			echo '<h3>Categories</h3>';
+			echo '<div id="accordion">';
+			echo get_the_term_list( $post->ID, 'category', '<h3>Category '.$counter.'</h3><div><p>', '</p></div><h3>Category '.++$counter.'</h3><div><p>','</p></div>');
+
+			echo '</div>';
 			
 		}
 

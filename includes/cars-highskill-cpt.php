@@ -35,7 +35,7 @@ function ch_register_cars() {
 		'query_var' 		=> true,
 		'can_export' 		=> true,
 		'has_archive'   	=> true,
-		'rewrite' 			=> array('slug' => 'cars'),
+		'rewrite' 			=> true,
 		'capability_type' 	=> 'post',
 		'supports' 			=> array(
 			'title'
@@ -66,13 +66,13 @@ function ch_custom_taxonomy() {
     'menu_name' => __( 'Models' ),
   ); 	
  
-  register_taxonomy('models',array('cars', 'post', 'page'), array(
+  register_taxonomy('models',array('cars'), array(
     'hierarchical' => true,
     'labels' => $labels,
     'show_ui' => true,
     'show_admin_column' => true,
     'query_var' => true,
-    'rewrite' => array( 'slug' => 'model' ),
+    'rewrite' => array( 'slug' => 'models' ),
   ));
 }
 add_action( 'init', 'ch_custom_taxonomy');
