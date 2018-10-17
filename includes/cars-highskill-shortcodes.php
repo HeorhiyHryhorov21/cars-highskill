@@ -34,22 +34,23 @@ function add_car_form($atts, $content = null) {
 	// Fetch Posts
 	$car_posts = new WP_Query($args);
 
-	$output = '';
-	$output .= '<form class="form-group">';
-	$output .= '<h3>Title</h3>';
-	$output .= '<input type="text" id="title" name="title">';
-	$output .= '<h3>Categories</h3>';
+	ob_start(); 
+	echo '<form class="form-group">';
+	echo '<h3>Title</h3>';
+	echo '<input type="text" id="title" name="title">';
+	echo '<h3>Categories</h3>';
 	
-	$output 	.= get_the_term_list( $post->ID, 'category', '<select name="category"><option>', '</option><option>','</option></select>');
+	echo get_the_term_list( $post->ID, 'category', '<select name="category"><option>', '</option><option>','</option></select>');
 	
-	$output .= '<h3>Description</h3>';
-	$output .= '<textarea rows="10" cols="45" name="description"></textarea>';
-	$output .= '<input type="submit" value="Send" name="submit">';
-	$output .= '</form>';
+	echo '<h3>Description</h3>';
+	echo '<textarea rows="10" cols="45" name="description"></textarea>';
+	echo '<input type="submit" value="Send" name="submit">';
+	echo '</form>';
 
-
-	wp_reset_postdata();
+	$output = ob_get_contents();
+	ob_end_clean();
 	return $output;
+	wp_reset_postdata();
 }
 
 
@@ -87,12 +88,14 @@ function show_cars_list($atts, $content = null) {
 	// Fetch Posts
 	$car_posts = new WP_Query($args);
 
-	$output = '';
-	$output .= '<h3>Categories</h3>';
+	ob_start(); 
+	echo '<h3>Categories</h3>';
 
-	$output .= get_the_term_list($post->ID, 'category', '<ul><li>', '</li><li>', '</li></ul>');
+	echo get_the_term_list($post->ID, 'category', '<ul><li>', '</li><li>', '</li></ul>');
+	$output = ob_get_contents();
+	ob_end_clean();
+	return $output;
 	wp_reset_postdata();
-	return $output;  
 
 }
 
