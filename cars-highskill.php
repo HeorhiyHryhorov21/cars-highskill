@@ -232,7 +232,7 @@ class Cars_Highskill{
 				        'post_title' 		=> wp_strip_all_tags( $_POST['title'] ),
 				        'post_content' 		=> $_POST['description'],
 				        'post_category' 	=> array($_POST['category']),
-				        'post_type' 		=> 'post',
+				        'post_type' 		=> 'cars',
 				        'post_status' 		=> 'pending'
     				);
 
