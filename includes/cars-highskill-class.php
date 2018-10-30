@@ -33,7 +33,7 @@ class Cars_Highskill_Widget extends WP_Widget {
 
 		echo $args['before_title'];
 		if (!empty($instance['title'])) {
-			echo '<h1>'.$instance['title'].'</h1>';
+			echo _e('<h1>'.$instance['title'].'</h1>', 'ch_domain');
 		}
 		echo $args['after_title'];
 		?>
@@ -42,7 +42,7 @@ class Cars_Highskill_Widget extends WP_Widget {
 
 		 $cat = get_terms('models'); 
         foreach ($cat as $catVal) {
-            echo '<h3>'.$catVal->name.'</h3>';
+            echo _e('<h3>'.$catVal->name.'</h3>', 'ch_domain');
             $postArg = array('post_type'=>'cars','order'=>'desc',
                               'tax_query' => array(
                                                     array(
@@ -58,7 +58,7 @@ class Cars_Highskill_Widget extends WP_Widget {
             if($getPost->have_posts()){
                 echo '<div>';
                     while ( $getPost->have_posts()):$getPost->the_post();
-                        echo "<p>".$post->post_title."</p>";
+                        echo _e("<p>".$post->post_title."</p>", 'ch_domain');
                     endwhile;
                 echo '</div>';
             }
@@ -110,9 +110,4 @@ class Cars_Highskill_Widget extends WP_Widget {
 			
 			<?php 
 		}
-	}
-
-			//Register Widget
-	function register_cars_models() {
-		register_widget('Cars_Highskill_Widget');
 	}
