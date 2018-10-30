@@ -21,17 +21,19 @@ class Cars_Highskill{
 		add_action('init', array($this, 'ch_custom_taxonomy'));
 		add_action('add_meta_boxes', array($this, 'ch_add_fields_metabox'));
 		add_action('save_post', array($this, 'ch_save'));
+		add_action( 'widgets_init', array($this, 'register_cars_models'));
 		add_shortcode( 'car_form', array($this, 'add_car_form'));
 		add_shortcode( 'show_cars', array($this, 'show_cars_list'));
 		add_action('init', array($this, 'add_custom_post'));
-		add_action( 'widgets_init', 'register_cars_models');
-		// Add widget Class
-		require_once 'includes/cars-highskill-class.php';
-
-
 
 	}
 
+	//Register Widget
+	function register_cars_models() {
+		// Add widget Class
+		require_once 'includes/cars-highskill-class.php';
+		register_widget('Cars_Highskill_Widget');
+	}
 
 	function ch_add_admin_scripts() {
 		wp_enqueue_style('ch-admin-style', plugins_url(). '/cars-highskill/css/style-admin.css');
@@ -59,24 +61,24 @@ class Cars_Highskill{
 		$labels = array(
 			'name' 					=> $plural_name,
 			'singular_name' 		=> $singular_name,
-			'add_new' 				=> 'Add New',
-			'add_new_item' 			=> 'Add New '. $singular_name,
-			'edit' 					=> 'Edit',
-			'edit_item' 			=> 'Edit '. $singular_name,
-			'new_item' 				=> 'New '. $singular_name,
-			'view' 					=> 'View '. $singular_name,
-			'view_item' 			=> 'View '. $plural_name,
-			'search_items' 			=> 'Search '. $plural_name,
-			'not_found' 			=> 'No ' . $plural_name . ' found',
-			'not_found_in_trash' 	=> 'No ' . $plural_name. ' found',
-			'menu_name'				=> $plural_name,
+			'add_new' 				=> __('Add New', 'ch_domain'),
+			'add_new_item' 			=> __('Add New '. $singular_name, 'ch_domain'),
+			'edit' 					=> __('Edit', 'ch_domain'),
+			'edit_item' 			=> __('Edit '. $singular_name, 'ch_domain'),
+			'new_item' 				=> __('New '. $singular_name, 'ch_domain'),
+			'view' 					=> __('View '. $singular_name, 'ch_domain'),
+			'view_item' 			=> __('View '. $plural_name, 'ch_domain'),
+			'search_items' 			=> __('Search '. $plural_name, 'ch_domain'),
+			'not_found' 			=> __('No ' . $plural_name . ' found', 'ch_domain'),
+			'not_found_in_trash' 	=> __('No ' . $plural_name. ' found', 'ch_domain'),
+			'menu_name'				=> __($plural_name, 'ch_domain'),
 
 
 		);
 
 		$args = apply_filters('ch_args', array(
 			'labels' 			=> $labels,
-			'description' 		=> 'Cars by models',
+			'description' 		=> __('Cars by models', 'ch_domain'),
 			'taxonomies' 		=> array('models'),
 			'public' 			=> true,
 			'show_in_menu' 		=> true,
@@ -128,7 +130,7 @@ class Cars_Highskill{
 	function ch_add_fields_metabox() {
 		add_meta_box(
 			'ch_fields',
-			__('Cars Models Fields'), 
+			__('Cars Models Fields', 'ch_domain'), 
 			'ch_fields_callback', 
 			'cars', 
 			'normal',
@@ -148,7 +150,7 @@ class Cars_Highskill{
 				<label for="description"><?php esc_html_e('Description','ch_domain'); ?></label>
 				<?php 
 				$content = get_post_meta($post->ID, 'description', true);
-				$editor = 'description';
+				$editor = _e('description', 'ch_domain');
 				$settings = array(
 					'textarea_rows' => 5,
 					'media_buttons' => true,
@@ -184,16 +186,16 @@ class Cars_Highskill{
 		global $post;
 
 		$atts = shortcode_atts(array(
-			'title' => 'Add a Car',
+			'title' => __('Add a Car', 'ch_domain'),
 			'category' => 'all',
 		), $atts);
-
+		if (current_user_can('author')) :
 		ob_start(); ?> 
-		<h3><?php _e('Shortcode Form') ?></h3>
+		<h3><?php _e('Shortcode Form', 'ch_domain') ?></h3>
 		<form action="" method="POST" class="form-group">
-			<label for="title"><?php _e('Title') ?></label>
+			<label for="title"><?php _e('Title', 'ch_domain') ?></label>
 			<input type="text" id="title" name="title" class="title"><br>
-			<label for="category"><?php _e('Model') ?></label>
+			<label for="category"><?php _e('Model', 'ch_domain') ?></label>
 
 			<select name="category" id="category" class="category">
 				<?php 
@@ -211,7 +213,7 @@ class Cars_Highskill{
 							<p><?php $post->post_title ?></p>
 							<?php $terms = get_the_terms($post->ID, 'models' );?>
 							<?php foreach ($terms as $term) : ?>
-								<li><?php echo '<option>' . $term_name = $term->name . '</option>' ?></li>
+								<li><?php echo _e('<option>' . $term_name = $term->name . '</option>', 'ch_domain') ?></li>
 							<?php endforeach; endwhile; ?>
 						</ul>
 					<?php endif; ?>
@@ -226,6 +228,7 @@ class Cars_Highskill{
 			$output = ob_get_clean();
 			wp_reset_postdata();
 			return $output;
+		endif;
 
 		}
 
@@ -248,7 +251,7 @@ class Cars_Highskill{
 			// Creating a Car Displaying Shortcode
 		function show_cars_list($atts, $content = null) {
 			$atts = shortcode_atts(array(
-				'title' => 'Show a Car',
+				'title' => __('Show a Car', 'ch_domain'),
 				'category' => 'category',
 			), $atts);
 
@@ -258,13 +261,14 @@ class Cars_Highskill{
 
 			$getPost = new wp_query($args);
 			global $post;
+			if (current_user_can('author')) :
 			ob_start();  ?>
-			<h3><?php _e('Cars List Shortcode') ?></h3>
+			<h3><?php _e('Cars List Shortcode', 'ch_domain') ?></h3>
 			<table> 
 				<tr> 
-					<th><?php _e('Title') ?></th> 
-					<th><?php _e('Date') ?></th> 
-					<th><?php _e('Status') ?></th> 
+					<th><?php _e('Title', 'ch_domain') ?></th> 
+					<th><?php _e('Date', 'ch_domain') ?></th> 
+					<th><?php _e('Status', 'ch_domain') ?></th> 
 				</tr> 
 
 				<?php 
@@ -277,15 +281,15 @@ class Cars_Highskill{
 
 				global $post;
 				foreach($getPost as $post) {
-					echo "<tr><td>".$post->post_title."</td><td>".$post->post_date."</td><td>".$post->post_status."</td><tr>";
+					echo _e("<tr><td>".$post->post_title."</td><td>".$post->post_date."</td><td>".$post->post_status."</td><tr>", 'ch_domain');
 				}	
 				?>
 			</table>
-
+				
 			<?php
-
 			$output = ob_get_clean();
 			return $output;
+		endif;
 			?>
 			<?php
 
